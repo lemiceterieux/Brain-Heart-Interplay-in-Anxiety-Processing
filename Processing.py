@@ -68,15 +68,10 @@ for s in glob("s*/"):
                nHigher += [(abs(Hhigher[:,i,j])**2/np.sum(abs(Hhigher[:,i,:])**2,-1)).astype(float)]
                nLow += [(abs(Hlow[:,i,j])**2/np.sum(abs(Hlow[:,i,:])**2,-1)).astype(float)]
            return nHigher, nHigh, nLow
-     #          nHhigh[:,i,j] = (abs(Hhigh[:,i,j])**2/np.sum(abs(Hhigh[:,i,:])**2,-1)).astype(float)
-     #          nHlow[:,i,j] = (abs(Hlow[:,i,j])**2/np.sum(abs(Hlow[:,i,:])**2,-1)).astype(float)
        nHhigher, nHhigh, nHlow = zip(*Parallel(n_jobs=117)(delayed(makeLol)(i) for i in range(n_rois)))
-     #  print(zz,np.shape(nHhigh))
        band += [np.array([np.mean(nHlow,-1), np.mean(nHhigh,-1),np.mean(nHhigher,-1)])]
    bands = np.array(band).mean(0)
-   #np.save("{1}_AlldtfARW.npy".format(ss,zz),[fARlow,fARhigh])
    np.save("{1}_AlldtfH.npy".format(ss,zz),bands)
-#print(W.shape,fAR.shape,zz,ss)
   else:
    bands = np.load("{1}_AlldtfH.npy".format(ss,zz)).squeeze()
   C += [bands]
@@ -142,10 +137,6 @@ lm = (HA[:,0] - LA[:,0]).mean(0)
 hm = (HA[:,1] - LA[:,1]).mean(0)
 hhm = (HA[:,2] - LA[:,2]).mean(0)
 
-#r1m = (rest1[:14,0] - rest1[14:,0]).mean(0)
-#r2m = (rest2[:14,0] - rest2[14:,0]).mean(0)
-#vm = (visual[:14,0] - visual[14:,0]).mean(0)
-#sm = (self[:14,0] - self[14:,0]).mean(0)
 
 for i in range(10000):
     p = np.random.permutation(HA.shape[0])
@@ -153,15 +144,6 @@ for i in range(10000):
     vl += [np.mean(HA[p,0] - LA[p2,0] -0*lm,0)]
     vh += [np.mean(HA[p,1] - LA[p2,1] -0*hm,0)]
     vhh += [np.mean(HA[p,2] - LA[p2,2] -0*hm,0)]
-#    p = np.random.permutation(rest1.shape[0])  [:rest1.shape[0]//2]
-#    pp = np.random.permutation(rest1.shape[0]) [:rest1.shape[0]//2]
-#    p2 = np.random.permutation(rest1.shape[0]) [rest1.shape[0]//2:]
-#    pp2 = np.random.permutation(rest1.shape[0])[rest1.shape[0]//2:]
-#
-#    vr1 += [np.mean(rest1[p,0] - rest1 [pp,0] -r1m,0)]
-#    vr2 += [np.mean(rest2[p,0] - rest2 [pp,0] -r2m,0)]
-#    vs +=  [np.mean(self[p,0] -  self  [pp,0] - sm,0)]
-#    vv +=  [np.mean(visual[p,0]- visual[pp,0] - vm,0)]
 
 tl = np.mean(HA[:,0] - LA[:,0],0)
 th = np.mean(HA[:,1] - LA[:,1],0)
@@ -169,74 +151,17 @@ thh = np.mean(HA[:,2] - LA[:,2],0)
 vh = np.array(vh)
 vhh = np.array(vhh)
 vl = np.array(vl)
-#tr1 = np.mean(rest1[:14,0] - rest1[14:,0],0)
-#tr2 = np.mean(rest2[:14,0] - rest2[14:,0],0)
-#ts = np.mean(self[:14,0] - self[14:,0],0)
-#tv = np.mean(visual[:14,0] - visual[14:,0],0)
-#
-#ttr1 = np.mean(rest1[:14,1] - rest1[14:,1],0)
-#ttr2 = np.mean(rest2[:14,1] - rest2[14:,1],0)
-#tts = np.mean(self[:14,1] - self[14:,1],0)
-#ttv = np.mean(visual[:14,1] - visual[14:,1],0)
-#
-#vr1 = np.array(vr1)
-#vr2 = np.array(vr2)
-#vs = np.array(vs)
-#vv = np.array(vv)
-#
-#vvr1 = np.array(vvr1)
-#vvr2 = np.array(vvr2)
-#vvs = np.array (vvs)
-#vvv = np.array (vvv)
-
-#pr1 = np.zeros((n_rois,n_rois),dtype=float)
-#pr2 = np.zeros((n_rois,n_rois),dtype=float)
-#ps = np.zeros((n_rois,n_rois),dtype=float)
-#pv = np.zeros((n_rois,n_rois),dtype=float)
-#ppr1 = np.zeros((n_rois,n_rois),dtype=float)
-#ppr2 = np.zeros((n_rois,n_rois),dtype=float)
-#pps = np.zeros((n_rois,n_rois),dtype=float)
-#ppv = np.zeros((n_rois,n_rois),dtype=float)
 pl = np.zeros((n_rois,n_rois),dtype=float)
 ph = np.zeros((n_rois,n_rois),dtype=float)
 phh = np.zeros((n_rois,n_rois),dtype=float)
 
 for i in range(n_rois):
     for j in range(n_rois):
-#        print((tr1[i,j] > vr1[:,i,j]).mean(0),(tr1[i,j] < vr1[:,i,j]).mean(0),calls[i],calls[j],"rest1")
-#        print((tr2[i,j] > vr2[:,i,j]).mean(0),(tr2[i,j] < vr2[:,i,j]).mean(0),calls[i],calls[j],"rest2")
-#        print((ts[i,j] > vs[:,i,j]).mean(0),(ts[i,j] < vs[:,i,j]).mean(0),calls[i],calls[j],"self")
-#        print((tv[i,j] > vv[:,i,j]).mean(0),(tv[i,j] < vv[:,i,j]).mean(0),calls[i],calls[j],"visual",)
         pl[i,j] = np.min(((tl[i,j] > vl[:,i,j]).mean(0),(tl[i,j] < vl[:,i,j]).mean(0)))
         ph[i,j] = np.min(((th[i,j] > vh[:,i,j]).mean(0),(th[i,j] < vh[:,i,j]).mean(0)))
         phh[i,j] = np.min(((thh[i,j] > vhh[:,i,j]).mean(0),(thh[i,j] < vhh[:,i,j]).mean(0)))
-#        pr1[i,j] = np.min(((tr1[i,j] > vr1[:,i,j]).mean(0),(tr1[i,j] < vr1[:,i,j]).mean(0)))
-#        pr2[i,j] = np.min(((tr2[i,j] > vr2[:,i,j]).mean(0),(tr2[i,j] < vr2[:,i,j]).mean(0)))
-#        pv[i,j] = np.min(((tv[i,j] > vv[:,i,j]).mean(0),(tv[i,j] < vv[:,i,j]).mean(0)))
-#        ps[i,j] = np.min(((ts[i,j] > vs[:,i,j]).mean(0),(ts[i,j] < vs[:,i,j]).mean(0)))
-#        ppr1[i,j] = np.min(((ttr1[i,j] > vvr1[:,i,j]).mean(0),(ttr1[i,j] < vvr1[:,i,j]).mean(0)))
-#        ppr2[i,j] = np.min(((ttr2[i,j] > vvr2[:,i,j]).mean(0),(ttr2[i,j] < vvr2[:,i,j]).mean(0)))
-#        ppv[i,j] = np.min((( ttv[i,j] >  vvv[:,i,j]).mean(0), (ttv[i,j] < vvv[:,i,j]).mean(0)))
-#        pps[i,j] = np.min((( tts[i,j] >  vvs[:,i,j]).mean(0), (tts[i,j] < vvs[:,i,j]).mean(0)))
 print((pl<0.05)[:,0],"Low Band")
 print((ph<0.05)[:,0],"High Band")
-#print((pr1<0.05)[:,0],"rest1")
-#print((pr2<0.05)[:,0],"rest2")
-#print((pv <0.05)[:,0],"vis")
-#print((ps <0.05)[:,0],"self")
-#print((ppr1<0.05)[:,0],"rest1")
-#print((ppr2<0.05)[:,0],"rest2")
-#print((ppv <0.05)[:,0],"vis")
-#print((pps <0.05)[:,0],"self")
-#print(tr1[:,0].astype(float),"rest1")
-#print(tr2[:,0].astype(float),"rest2")
-#print(tv [:,0].astype(float),"vis")
-#print(ts [:,0].astype(float),"self")
-#print(ttr1[:,0].astype(float),"rest1")
-#print(ttr2[:,0].astype(float),"rest2")
-#print(ttv [:,0].astype(float),"vis")
-#print(tts [:,0].astype(float),"self")
 
-np.save("{0}_AllPVVs.npy".format(order),[ph,pl,phh])#[pr1,pr2,ps,pv,ppr1,ppr2,pps,ppv])
-np.save("{0}_AllmVVs.npy".format(order),[th,tl,thh])#[tr1,tr2,ts,tv,ttr1,ttr2,tts,ttv])
-#print(rest1.shape,rest2.shape,self.shape,visual.shape,len(labs),np.unique(labs),np.unique(trial))
+np.save("{0}_AllPVVs.npy".format(order),[ph,pl,phh])
+np.save("{0}_AllmVVs.npy".format(order),[th,tl,thh])
